@@ -10,6 +10,10 @@
   * [One-to-one](relation-configuration/one-to-one.md)
   * [One-to-many](relation-configuration/one-to-many.md)
   * [Cascading policies](relation-configuration/cascading-policies.md)
+* [Identifier policy](identifier-policy/README.md)
+  * [After insertion](identifier-policy/after-insertion.md)
+  * [Before insertion](identifier-policy/before-insertion.md)
+  * [Already assigned](identifier-policy/already-assigned.md)
 * [Inheritance](inheritance.md)
 * [Polymorphism](polymorphism/README.md)
   * [Joined-tables](polymorphism/joined-tables.md)
@@ -24,4 +28,3 @@
 * [Architecture tips](architecture-tips/README.md)
   * [Don't create "a Persister to rule them all"](architecture-tips/dont-create-a-persister-to-rule-them-all.md)
   * [A word about performance](architecture-tips/a-word-about-performance.md)
-
