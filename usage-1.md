@@ -4,7 +4,7 @@ description: A quick introduction about using Stalactite orm module
 
 # Persistence configuration
 
-The entry point to use Stalactite from the `orm `module is the `MappingEase.entityBuilder(..)` method which helps one to build a `Persister` : it is the object that let one insert, update, delete or select an entity and its graph.
+The entry point to use Stalactite from the `orm` module is the `MappingEase.entityBuilder(..)` method which helps one to build a `Persister` through a `build(..)` method. Persister is the object that let one insert, update, delete or select an entity and its graph.
 
 To build a `Persister`, a `PersistenceContext` is necessary : it contains database oriented informations such as a JDBC`Connection` provider and a `Dialect`.
 
@@ -28,3 +28,4 @@ countryPersister.delete(country);
 
 Country loadedCountry = countryPersister.select(1);
 ```
+

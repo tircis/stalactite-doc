@@ -4,7 +4,7 @@ Stalactite supports 2 types of inheritance : mapped super class and inheritance 
 
 ### Mapped super class
 
-It's usually a good pratice to mutualize persistence mapping of data. One can do it with a class containing shared state, which will be inherited by classes that don't need to define again this mapping. The inheriting classes will target their own table because it won't be dictated by super class. As an example, we can have a `Vehicle`class inherited by `Car`and `Truk`: `Car`s will be stored in the `Car`table with all their data, and `Truk`s will have their own data stored in the `Truk`table, independently.
+It's usually a good pratice to mutualize persistence mapping of data. One can do it with a class containing shared state, which will be inherited by classes that don't need to define again this mapping. The inherinting classes will target their own table because it won't be dictated by super class. As an exemple, we can have a `Vehicle`class inherited by `Car`and `Truk`: `Car`s will be stored in the `Car`table with all their data, and `Truk`s will have their own data stored in the `Truk`table, independently.
 
 {% hint style="info" %}
 With mapped super class, only suclasses are allowed to define identifier policy.
@@ -35,7 +35,7 @@ MappingEase.entityBuilder(Truk.class, Long.class)
 {% hint style="danger" %}
 #### Mapped super class and before-insert identifier policy
 
-With before-insert identifier policy user is left the choice to use any kind of sequence, and even reuse an already used sequence, hence creating a shared identifier pool for a mapped super class. This is technically allowed but is considered a (very) bad practice because it goes against the mapped super class principle which targets more technical usage than a real inheritance goal. For such sequence reuse, prefer real inheritance mapping.
+With before-insert identifier policy user is left the choice to use any kind of sequence, and even reuse an already used sequence, hence creating a shared identifier pool for a mapped super class. This is technically allowed but is considered a \(very\) bad practice because it goes against the mapped super class principle which targets more technical usage than a real inheritance goal. For such sequence reuse, prefer real inheritance mapping.
 {% endhint %}
 
 ### Inheritance with shared identifier
@@ -60,7 +60,7 @@ Persister<Car, Identifier<Long>, ?> carPersister = MappingEase.entityBuilder(Car
 
 
 
-But you may pay attention to identifier policy : for instance you can't obtain shared identifier if you choose after-insert policy (a database-triggered value generator) because identifier won't be shared accross other sibling entity classes since they'll target other table. As a consequence, **for a table-per-class inheritance policy one should use**
+But you may pay attention to identifier policy : for instance you can't obtain shared identifier if you choose after-insert policy \(a database-triggered value generator\) because identifier won't be shared accross other sibling entity classes since they'll target other table. As a consequence, **for a table-per-class inheritance policy one should use**
 
 * already-assigned identifier
 * or before-insert identifier
@@ -88,7 +88,7 @@ MappingEase.entityBuilder(Truk.class, Long.class)
 As a difference with _table-per-class_, after-insert identifier policy is a fine choice because you're sure to share identifier sequence. For other policies, same warning applies as for _table-per-class_ : share your sequence.
 
 {% hint style="danger" %}
-Sharing mapping on a same table can leads to constraint integrity violation : if a column is mandatory for an entity, then it should be the same for an entity that shares the table, or constraint must be removed. Since Stalactite is "decentralized" (mappings doesn't see each other) as a difference with Hibernate (or JPA), it can't guaranty this mecanism (removing constraint for instance) and this choice is let to user (who is encouraged to remove any mandatory column when using single-table mapping !).
+Sharing mapping on a same table can leads to constraint integrity violation : if a column is mandatory for an entity, then it should be the same for an entity that shares the table, or constraint must be removed. Since Stalactite is "decentralized" \(mappings doesn't see each other\) as a difference with Hibernate \(or JPA\), it can't guaranty this mecanism \(removing constraint for instance\) and this choice is let to user \(who is encouraged to remove any mandatory column when using single-table mapping !\).
 {% endhint %}
 
 #### Joined-table
@@ -109,4 +109,6 @@ Persister<Car, Identifier<Long>, ?> carPersister = MappingEase.entityBuilder(Car
 			.withJoinedTable()
 		.build(persistenceContext, mappedSuperClassData.carTable);
 ```
+
+
 

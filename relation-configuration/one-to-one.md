@@ -37,7 +37,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 
 ### Declaring property owned by reverse side
 
-By default property relation is owned by declaring side, but depeding on your database design one may need to declare it on the target side, then method mappedBy(..) must be used :
+By default property relation is owned by declaring side, but depeding on your database design one may need to declare it on the target side, then method mappedBy\(..\) must be used :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -48,7 +48,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 	.mappedBy(City::getCountry)
 ```
 
-This creates a bidirectional one-to-one relation that will be persisted on a `City `table through the `countryId `column.
+This creates a bidirectional one-to-one relation that will be persisted on a `City` table through the `countryId` column.
 
 #### Without bidirectional relation
 
@@ -82,7 +82,7 @@ This implies that the owning property column is not nullable.
 
 ## Cascade type
 
-By default, cascade policy is `ALL` (which means that unsaved target instance is save when root is saved, but not deleted when root is deleted), this behavior can be changed with the `cascading(..)` method :
+By default, cascade policy is `ALL` \(which means that unsaved target instance is save when root is saved, but not deleted when root is deleted\), this behavior can be changed with the `cascading(..)` method :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -96,3 +96,4 @@ MappingEase.entityBuilder(Country.class, Long.class)
 {% hint style="info" %}
 Please have a look to [cascading policies](cascading-policies.md) to choose the one that fits your needs.
 {% endhint %}
+
