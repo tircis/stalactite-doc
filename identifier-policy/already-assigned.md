@@ -9,8 +9,12 @@ An example of a simple (even basic) implementation of those methods would be a `
 
 Please note that Stalactite will also invoke the second method right after entity loading to take into account transient state management systems. Hence an implementation based on HTTP request life cycle is possible, as well as a transient `boolean` field in the entity (as mentioned above).
 
+Here is an example with state stored on entity :
+
 ```java
-TODO : insert example
+MappingEase.entityBuilder(Car.class, long.class)
+    .add(Car::getId).identifier(IdentifierPolicy.alreadyAssigned(Car::markAsPersisted, Car::isPersisted))
+    .add(Car::getModel)
 ```
 
 {% hint style="success" %}
