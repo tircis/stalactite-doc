@@ -1,6 +1,14 @@
-# Selection a projection
+---
+description: How to build a bean graph from some SQL
+---
 
-#### **From an SQL statement**
+# Complex projection
+
+{% hint style="info" %}
+Following explanations will use example of a query created through simple `String`s, please note that all methods mentionned below also exist with a signature accepting `Query` object which can be build thanks to a fluent API starting with `QueryEase.selec(..)`.
+{% endhint %}
+
+## **From an SQL statement**
 
 An object can be created from a simple SQL query thanks to the `PersistenceContext#newQuery(CharSequence, Class)` method. The first argument contains the SQL to be executed, and the second is the type of bean built by the execution of the query. Then one can map selected columns to object properties through method references :\
 
@@ -12,7 +20,7 @@ persistenceContext.newQuery("select name, isoCode from Country", Country.class)
     .execute();
 ```
 
-By default the property type will be used to read `ResultSet` column, but if the column type doesn’t really match the bean property one then we can enforce it by giving the type to use as an extra map(..) method parameter such as below. This will tell Stalactite to use the matching-type `ResultSetReader` configured at the `Dialect` level.
+By default the property type will be used to read `ResultSet` column, but if the column type doesn’t really match the bean property one then we can enforce it by giving the type to use as an extra `map(..)` method parameter such as below. This will tell Stalactite to use the matching-type `ResultSetReader` configured at the `Dialect` level.
 
 ```java
 persistenceContext.newQuery("select name, inhabitantCount, isoCode from Country", Country.class)
@@ -22,7 +30,7 @@ persistenceContext.newQuery("select name, inhabitantCount, isoCode from Country"
     .execute();
 ```
 
-At last, if some conversion needs to be done, one can specify it with some extra arguments to the map method : the first extra one is the Java type for the column to be read, and the second extra one is the converter. It will get the column value as input and its result will be given to the method :
+At last, if some conversion needs to be done, you can specify it with some extra arguments to the `map(..)` method : the first extra one is the Java type for the column to be read, and the second extra one is the converter. It will get the column value as input and its result will be given to the method :
 
 ```java
 persistenceContext.newQuery("select name, nuclearWeaponCount, isoCode from Country", Country.class)
@@ -32,7 +40,7 @@ persistenceContext.newQuery("select name, nuclearWeaponCount, isoCode from Count
     .execute();
 ```
 
-#### &#x20;**Setting request parameter**
+## **Setting request parameter**
 
 Of course one can give parameters to the query and set them through `set(..)` methods. Parameters are named (not indexed) and must be prefixed by “:” in SQL, such as below :
 
@@ -47,7 +55,7 @@ persistenceContext.newQuery("select name, isoCode from Country where isoCode = :
 Note that Stalactite will detect parameters and transform SQL as a `PreparedStatement` to avoid SQL injection. Meanwhile parameter detection is a kind of “simple and stupid” algorithm and won’t take all cases into account for now.
 {% endhint %}
 
-#### **Creating a bean graph**
+## **Creating a bean graph**
 
 Previous paragraphs create one bean per row and a very flat object but Stalactite allows the creation of complex tree by defining object keys and relations. For instance one can create an entity by using `mapKey(..)` methods (there are several signatures of them) to define the identifier of root bean. In example below `Country` class has a one-arg constructor that gets the instance identifier :
 
@@ -59,7 +67,7 @@ persistenceContext.newQuery("select id, name, isoCode from Country", Country.cla
     .execute();
 ```
 
-Stalactite also supports multiple-args constructor, supposing that `Country` has a 3-args constructor one can write :
+Stalactite also supports multiple-args constructor, supposing that `Country` has a 3-args constructor you can write :
 
 ```java
 persistenceContext.newQuery("select id, name, isoCode from Country", Country.class)
@@ -76,7 +84,7 @@ persistenceContext.newQuery("select id, name, isoCode from Country", Country.cla
 ```
 
 {% hint style="success" %}
-Actually, thanks to the latter case, any factory method can be used, whether it is exposed by the entity class or not.
+Actually, thanks to the latter case, any factory method can be used, whether it is exposed by the entity class itself or not.
 {% endhint %}
 
 {% hint style="warning" %}
@@ -91,7 +99,7 @@ persistenceContext.newQuery("select id, name, isoCode from Country", Country.cla
     .execute();
 ```
 
-#### Using a table metamodel
+## Using a table metamodel
 
 As an architecture strategy, a project may decide to expose its Database model as a metamodel, this has several benefits if you write it with Stalactite `Table`s and` Column`s, in particular a query can be mapped to bean properties by using `Column`s. Supposing the project defines a `CountryTable` class which is a `Table` class with accessible `Column` as instance field. One can write following code :
 
@@ -117,7 +125,7 @@ persistenceContext.newQuery(QueryEase.select(countryTable.id, countryTable.name,
     .execute();
 ```
 
-#### Returning one row
+## Returning one row
 
 For very simple cases one can expect the request to return only one row, therefore the query should not return a `List` but a single `Object` or `null`. To get such a behavior, just call `singleResult()` during mapping :
 
@@ -128,9 +136,9 @@ int countryCount = persistenceContext.newQuery("select count(*) as countryCount 
     .execute();
 ```
 
-#### &#x20;Building a complex model
+## Building a complex model
 
-The query API let’s one build a graph by attaching related bean to root one with a `ResultSetRowTransfomer` : it will manage the related bean constructor and keys.
+The query API lets also build a graph by attaching related bean to the root one through its accessor method and a `ResultSetRowTransfomer` that will manage the related bean construction.
 
 ```java
 persistenceContext.newQuery("select Country.id as countryId, Country.name as countryName, Country.isoCode, City.id as cityId, City.name as cityName from Country inner join City on Country.capitalId = City.id", Country.class)
@@ -145,9 +153,9 @@ persistenceContext.newQuery("select Country.id as countryId, Country.name as cou
 **TODO: explain how to populate a related Collection**\
 
 
-#### Very open mapping
+## Very open mapping
 
-If you don’t find the appropriate method to build your result, one may finally consume the read `ResultSet` thanks to the following syntax where root bean is also given for fulfillment:
+If you don’t find the appropriate method to build your result, one may finally consume the read `ResultSet` thanks to a very open `map(..)` method signature that gets a consumer of root bean and `ResultSet` :
 
 ```java
 persistenceContext.newQuery("select Country.id as countryId, Country.name as countryName, Country.isoCode, City.id as cityId, City.name as cityName from Country inner join City on Country.capitalId = City.id", Country.class)
