@@ -138,20 +138,40 @@ int countryCount = persistenceContext.newQuery("select count(*) as countryCount 
 
 ## Building a complex model
 
-The query API lets also build a graph by attaching related bean to the root one through its accessor method and a `ResultSetRowTransfomer` that will manage the related bean construction.
+The query API lets also build a graph by attaching related beans to the root one through its accessor methods and a `ResultSetRowTransformer` that will manage related bean construction. Note that accessor methods will be abstracted through a BeanRelationFixer, so one can benefit from its available static methods to, for example, manage bidirectionality.
+
+### To-one relation
 
 ```java
 persistenceContext.newQuery("select Country.id as countryId, Country.name as countryName, Country.isoCode, City.id as cityId, City.name as cityName from Country inner join City on Country.capitalId = City.id", Country.class)
     .mapKey(Country::new , "id", long.class)
     .map("countryName", Country::setName)
     .map("isoCode", Country::setIsoCode)
-    .map(Country::setCapital, new ResultSetRowTransfomer<>(City.class, “cityId”, DefaultResultSetReaders.LONG_PRIMITIVE_READER, City::new)
+    .map(BeanRelationFixer.of(Country::setCapital), new ResultSetRowTransformer<>(City.class, “cityId”, DefaultResultSetReaders.LONG_PRIMITIVE_READER, City::new)
     .execute();
 ```
 
-\
-**TODO: explain how to populate a related Collection**\
+### To-many relation
 
+Attaching a collection to a root bean will use same method as to-one relation : since its first argument is a combiner of 2 beans we must create a smart one that will check collection presence and add related bean, whereas passed `ResultSetRowTransformer` remains a bean creator as mentioned for to-one relation.
+
+```java
+// Note that code below is equivalent to BeanRelationFixer.of(Country::setCities, Country::getCities, HashSet::new)
+BeanRelationFixer<Country, City> cityCountryCombiner = (country, city) -> {
+    if (country.getCities() == null) {
+	country.setCities(new HashSet<>());
+    }
+    country.getCities().add(city);
+};
+
+
+persistenceContext.newQuery("select Country.id as countryId, Country.name as countryName, Country.isoCode, City.id as cityId, City.name as cityName from Country inner join City on Country.capitalId = City.id", Country.class)
+    .mapKey(Country::new , "id", long.class)
+    .map("countryName", Country::setName)
+    .map("isoCode", Country::setIsoCode)
+    .map(cityCountryCombiner, new ResultSetRowTransformer<>(City.class, “cityId”, DefaultResultSetReaders.LONG_PRIMITIVE_READER, City::new)
+    .execute();
+```
 
 ## Very open mapping
 
