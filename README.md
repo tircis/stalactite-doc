@@ -51,7 +51,7 @@ In order to fulfill its goal (having an ORM less complex than Hibernate, with no
 
 As a bonus Stalactite **doesn't use bytecode enhancement,** because it doesn't need to modify given beans nor their collections. But it uses reflection to apply values onto beans.
 
-As a good pratice, only PreparedStatement are used to avoid SQL Injection. Meanwhile select statement are not totally protected because one can append any kind of Object in the SQL as parameter. So, as a developer, **you must care that SQL queries don't concatenate unprotected sources**.
+As a good pratice, only `PreparedStatement` are used to avoid SQL Injection. Meanwhile select statement are not totally protected because one can append any kind of Object in the SQL as parameter. So, as a developer, **you must care that SQL queries don't concatenate unprotected sources**.
 
 
 
