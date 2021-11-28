@@ -27,11 +27,13 @@ Stalactite is born after many years of Hibernate usage, with the observation tha
 * then come the well-known and common exceptions LazyInitializationException, StaleStateObjectException, ...
 
 {% hint style="info" %}
-**Some particular words about graph inflation**
+**Some particular words about Annotations usage impact**
 
-By using annotations for mapping, we miss a non intrusive way of declaring it. HBM/XML is still possible but not officially well maintained. For instance, in a DDD project, where Domain must be framework-agnostic, annotations are a problem, then an abstraction layer can be introduced to decouple Domain Objects and Persistence Objects which is rarely more than a one-one mapping. As a second example, quickly persisting some data coming from a Controller is not possible before mapping them to entity which will produce boilerplate code or reflection overhead.
+By using annotations for mapping, we lack a non intrusive way of declaring it (HBM/XML is still possible but not officially well maintained), for example :&#x20;
 
-Finally, as long as the project rises in features, and produces relations between entities, the trend brings to obtain a huge entity graph if no one take care of it. Then performance for loading it may become a problem, as well as modifying it.
+* in a Domain Driven Design project, where Domain must be framework-agnostic, annotations are a problem. To overcome this problem a copy of Domain entities can be introduced in persistence module to get a Persistence Domain, helped by a one-one mapper, this introduce duplicate and boilerplate code. Worth mentionning that bidirectionality between some entity can be quite complex to solve by the mapper.
+* quickly persisting some data coming from a Controller is not possible before mapping them to entity, which will produce boilerplate code or reflection overhead.
+* as long as your project rises in features, and produces relations between entities, the trend brings to obtain a huge entity graph if no one takes care of it, because it's very hard to quickly see what's going to be loaded or not with annotations. Then performance for loading it may become a problem, as well as modifying it.
 {% endhint %}
 
 {% hint style="info" %}
