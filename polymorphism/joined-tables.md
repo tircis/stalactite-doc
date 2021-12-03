@@ -1,4 +1,0 @@
-# Joined-tables
-
-TODO
-

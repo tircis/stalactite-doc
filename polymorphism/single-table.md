@@ -1,4 +1,0 @@
-# Single-table
-
-TODO
-

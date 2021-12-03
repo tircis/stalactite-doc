@@ -1,112 +1,80 @@
 # Inheritance
 
-Stalactite supports 2 types of inheritance : mapped super class and inheritance mapped with table relation.
+Stalactite supports 2 types of inheritance :&#x20;
+
+* mapped super class, that only centralizes mapped properties, not id policy
+* inheritance aimed at defining id policy
+
+{% hint style="info" %}
+In this chapter you'll get a persister per child class, hence you can't load all children entities of a mapped super class at once : for that see polymorphism.
+{% endhint %}
 
 ### Mapped super class
 
-It's usually a good pratice to mutualize persistence mapping of data. One can do it with a class containing shared state, which will be inherited by classes that don't need to define again this mapping. The inheriting classes will target their own table because it won't be dictated by super class. As an example, we can have a `Vehicle`class inherited by `Car`and `Truk`: `Car`s will be stored in the `Car`table with all their data, and `Truk`s will have their own data stored in the `Truk`table, independently.
+To avoid describing several times same persistence mapping of a common parent class, you can describe it through an "embeddable" mapping and reference it in children classes mapping thanks to the `mapSuperClass(..)` method. Since this way of doing is just for skipping repeation of common mapping, it is not possible to define target table of super class as well as its persistence policy : both are only done by children classes.
 
-{% hint style="info" %}
-With mapped super class, only suclasses are allowed to define identifier policy.
-{% endhint %}
-
-Such a mapping can be defined as this :
+As an example, we can have a `Vehicle`class inherited by `Car`and `Truk`: `Car`s will be stored in the `Car`table with all its data, and `Truk`s will have its own stored in the `Truk`table, independently. Such a mapping can be defined as this :
 
 ```java
+FluentEmbeddableMappingBuilder<Vehicle> vehiclePersistenceConfigurer =
+    MappingEase.embeddableBuilder(Vehicle.class)
+	.add(Vehicle::getColor)
+
+
 MappingEase.entityBuilder(Car.class, Long.class)
 	// concrete class defines id
 	.add(Car::getId).identifier(IdentifierPolicy.AFTER_INSERT)
 	.add(Car::getModel)
-	.mapSuperClass(MappingEase
-			.embeddableBuilder(Vehicle.class)
-			.add(Vehicle::getColor))
+	.mapSuperClass(vehiclePersistenceConfigurer
 	.build(persistenceContext);
 	
 MappingEase.entityBuilder(Truk.class, Long.class)
 	// concrete class defines id
 	.add(Truk::getId).identifier(IdentifierPolicy.AFTER_INSERT)
 	.add(Truk::getEngine)
-	.mapSuperClass(MappingEase
-			.embeddableBuilder(Vehicle.class)
-			.add(Vehicle::getColor))
+	.mapSuperClass(vehiclePersistenceConfigurer)
 	.build(persistenceContext);
 ```
 
-{% hint style="danger" %}
-#### Mapped super class and before-insert identifier policy
 
-With before-insert identifier policy user is left the choice to use any kind of sequence, and even reuse an already used sequence, hence creating a shared identifier pool for a mapped super class. This is technically allowed but is considered a (very) bad practice because it goes against the mapped super class principle which targets more technical usage than a real inheritance goal. For such sequence reuse, prefer real inheritance mapping.
-{% endhint %}
 
-### Inheritance with shared identifier
+### Inheritance to define identifier policy
 
-#### Table-per-class
+As a difference with mapped super class, hereafter the shared parent mapping defines id policy. This inheritance is declared by the `mapInheritance(..)` method.
 
-By design Stalactite supports _table-per-class_ mapping because one can map all properties of a class through all its method references to a single table, but then you'll have to take care about identifier sequence reuse. For helping to such sharing one should use the `mapInheritance(..)` method :
+Here is a simple exemple where a configuration defines mapped properties of `Vehicle` class, as well as its identifier policy, then the `Car` class can benefit of it.
 
 ```java
 EntityMappingConfiguration<Vehicle, Identifier<Long>> inheritanceConfiguration = MappingEase
       .entityBuilder(Vehicle.class, Long.class)
       // mapped super class defines id
       .add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
+      .add(Vehicle::getColor)
       .getConfiguration();
 
-Persister<Car, Identifier<Long>, ?> carPersister = MappingEase.entityBuilder(Car.class, LONG_TYPE)
+Persister<Car, Identifier<Long>, ?> carPersister = MappingEase
+      .entityBuilder(Car.class, Long.class)
       .add(Car::getModel)
-      .add(Car::getColor)
       .mapInheritance(inheritanceConfiguration)
       .build(persistenceContext);
 ```
 
 
 
-But you may pay attention to identifier policy : for instance you can't obtain shared identifier if you choose after-insert policy (a database-triggered value generator) because identifier won't be shared accross other sibling entity classes since they'll target other table. As a consequence, **for a table-per-class inheritance policy one should use**
-
-* already-assigned identifier
-* or before-insert identifier
-
-But in both cases, you must take care to apply a generator sharing values accross siblings and subtypes.
-
-#### Single-table
-
-Stalactite also supports _single-table_ mapping because, as it does for _table-per-class_, one can map all properties of a class through all their method references, but instead of using the `build(PersistenceContext)` method to obtain the final `Persister`, you're allowed to target a defined table thanks to the method `build(PersistenceContext, Table)`:
-
-```java
-MappingEase.entityBuilder(Car.class, Long.class)
-	// concrete class defines id
-	.add(Car::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.add(Car::getModel)
-	.build(persistenceContext, new Table("Vehicle"));
-	
-MappingEase.entityBuilder(Truk.class, Long.class)
-	// concrete class defines id
-	.add(Truk::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.add(Truk::getEngine)
-	.build(persistenceContext, new Table("Vehicle"));
-```
-
-As a difference with _table-per-class_, after-insert identifier policy is a fine choice because you're sure to share identifier sequence. For other policies, same warning applies as for _table-per-class_ : share your sequence.
-
-{% hint style="danger" %}
-Sharing mapping on a same table can leads to constraint integrity violation : if a column is mandatory for an entity, then it should be the same for an entity that shares the table, or constraint must be removed. Since Stalactite is "decentralized" (mappings doesn't see each other) as a difference with Hibernate (or JPA), it can't guaranty this mecanism (removing constraint for instance) and this choice is let to user (who is encouraged to remove any mandatory column when using single-table mapping !).
-{% endhint %}
-
-#### Joined-table
-
-To create a _joined-table_ inheritance type, one must use the `withJoinedTable()` method after `mapInheritance(..)` :
+By default mapped properties in parent configuration are stored in child class table, but you may want to store them in different tables through a join on primary key. For such a case one can simply ask for `withJoinedTables(..)` right after calling `mapInheritance(..)`. The method has 2 signatures, one without argument meaning that parent table will be named according to configured table naming strategy, and one of them taking the table on which parent class persistence must be done. Here is same example as previous one with this option activated :
 
 ```java
 EntityMappingConfiguration<Vehicle, Identifier<Long>> inheritanceConfiguration = MappingEase
-		.entityBuilder(Vehicle.class, Long.class)
-		// mapped super class defines id
-		.add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
-		.add(Vehicle::getColor)
-		.getConfiguration();
+      .entityBuilder(Vehicle.class, Long.class)
+      // mapped super class defines id
+      .add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
+      .add(Vehicle::getColor)
+      .getConfiguration();
 
-Persister<Car, Identifier<Long>, ?> carPersister = MappingEase.entityBuilder(Car.class, LONG_TYPE)
-		.add(Car::getModel)
-		.mapInheritance(inheritanceConfiguration)
-			.withJoinedTable()
-		.build(persistenceContext, mappedSuperClassData.carTable);
+Persister<Car, Identifier<Long>, ?> carPersister = MappingEase
+      .entityBuilder(Car.class, Long.class)
+      .add(Car::getModel)
+      .mapInheritance(inheritanceConfiguration)
+            .withJoinedTable(new Table("Vehicle"))
+      .build(persistenceContext);
 ```
-
