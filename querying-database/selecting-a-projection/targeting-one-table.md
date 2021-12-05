@@ -61,12 +61,12 @@ Column<Table, Long> idColumn = personTable.addColumn("id", long.class);
 Column<Table, String> nameColumn = personTable.addColumn("name", String.class);
 Column<Table, Integer> ageColumn = personTable.addColumn("age", int.class);
 List<Person> persons = persistenceContext.select(Person::new, idColumn,
-                                                                      select -> select
-                                                                      .add(nameColumn, Person::setName)
-                                                                      .add(ageColumn, Person::setAge),
-                                                                      where -> where
-                                                                      .and(nameColumn, Operators.startsWith("Bob"))
-                                                                      .and(ageColumn, Operators.gt(30)));
+    select -> select
+    .add(nameColumn, Person::setName)
+    .add(ageColumn, Person::setAge),
+    where -> where
+    .and(nameColumn, Operators.startsWith("Bob"))
+    .and(ageColumn, Operators.gt(30)));
 ```
 
 #### ****

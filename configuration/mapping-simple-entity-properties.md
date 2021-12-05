@@ -4,7 +4,7 @@ description: First steps to map an Entity
 
 # Mapping simple Entity properties
 
-From the `orm` module, the entry point is `MappingEase`. The first step is to give class entity and its identifier type to the `mappingBuilder(..)` method, such as this :
+From the `orm` module, the entry point is `MappingEase`. The first step is to give class entity and its identifier type to the `entityBuilder(..)` method, such as this :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -55,7 +55,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 This will add a non null constraint on the database column, and will throw an exception in case of null value at insertion and update time.
 
 {% hint style="success" %}
-Please note that **primitive type properties are considered mandatory**, so it is not required to declare them as mandatory
+Please note that **primitive type properties are considered mandatory**, so it is not necessary to declare them as mandatory
 {% endhint %}
 
 ### Setting a column name
@@ -70,7 +70,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 
 ### Setting a column
 
-If you already have a `Table` instance (of the Stalactite `orm` API) representing the database table and its `Column` instances you can reference them in the `add(..)` method, as you did for a column name.
+If you already have a `Table` instance (a Stalactite `orm` class) representing the database table and its `Column` instances you can reference them in the `add(..)` method, as you do for a column name.
 
 Column type and property type must match, this is guaranteed by generics type of the `add(..)` method signature.
 

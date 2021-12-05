@@ -24,7 +24,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 
 ### Ensuring enum name as persistence value
 
-As said before, **enum names are used by default so this is not necessary**, but one may need to specify it. This can be done in the same way as for ordinal value : one can call `byName()` after the `addEnum(..)` method :
+As said before, **enum names are used by default so the following is not necessary**, but one may need to specify it. This can be done in the same way as for ordinal value : call `byName()` after the `addEnum(..)` method :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -48,7 +48,7 @@ This will add a non null constraint on the database column, and will throw an ex
 
 ### Setting a column name
 
-You can override the enum column name by adding it as an argument of the `addEnum(..)` method. 
+You can override the enum column name by adding it as an argument of the `addEnum(..)` method.&#x20;
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -58,7 +58,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 
 ### Setting a column
 
-If you already have a `Table` instance \(of the Stalactite `orm` API\) representing the database table and its `Column` instances you can reference them in the `addEnum(..)` method, as you did for a column name.
+If you already have a `Table` instance (a Stalactite `orm` class) representing the database table and its `Column` instances you can reference them in the `addEnum(..)` method, as you did for a column name.
 
 Column type and property type must match, this is guaranteed by generics type of the `addEnum(..)` method signature.
 
@@ -71,4 +71,3 @@ MappingEase.entityBuilder(Country.class, Long.class)
     .add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
     .addEnum(Country::getLanguage, isoLocaleColumn)
 ```
-

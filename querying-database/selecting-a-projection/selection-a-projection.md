@@ -101,7 +101,7 @@ persistenceContext.newQuery("select id, name, isoCode from Country", Country.cla
 
 ## Using a table metamodel
 
-As an architecture strategy, a project may decide to expose its Database model as a metamodel, this has several benefits if you write it with Stalactite `Table`s and` Column`s, in particular a query can be mapped to bean properties by using `Column`s. Supposing the project defines a `CountryTable` class which is a `Table` class with accessible `Column` as instance field. One can write following code :
+As an architecture strategy, a project may decide to expose its Database model as a metamodel, this has several benefits if you write it with Stalactite `Table`s and `Column`s, in particular a query can be mapped to bean properties by using `Column`s. Supposing the project defines a `CountryTable` class which is a `Table` class with accessible `Column` as instance field. One can write following code :
 
 ```java
 CountryTable countryTable = new CountryTable();
@@ -163,7 +163,6 @@ BeanRelationFixer<Country, City> cityCountryCombiner = (country, city) -> {
     }
     country.getCities().add(city);
 };
-
 
 persistenceContext.newQuery("select Country.id as countryId, Country.name as countryName, Country.isoCode, City.id as cityId, City.name as cityName from Country inner join City on Country.capitalId = City.id", Country.class)
     .mapKey(Country::new , "id", long.class)

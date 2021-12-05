@@ -6,7 +6,7 @@ description: How to embed a bean onto an Entity
 
 Embedding beans follows the same principle as properties or enums, the method to use on a configuration is `embed(..)`.
 
-Supposing that a `Country` has a `Timestamp` which itself as a `modificationDate` and a `creationDate` that you want to persist into the same database table than the `Country` entity, then you have to embed the `Timestamp` \(complex type\) into the `Country` entity in such the following way :
+Supposing that a `Country` has a `Timestamp` which itself as a `modificationDate` and a `creationDate` that you want to persist into the same database table than the `Country` entity, then you have to embed the `Timestamp` (complex type) into the `Country` entity in such the following way :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -27,7 +27,7 @@ MappingEase.entityBuilder(Country.class, Long.class)
 
 ### Excluding properties from embedding
 
-By default all target entity properties \(please be aware of the note above : word "properties" may be misused\) are candidates for being persisted, this may not be wanted and some properties should be removed from persistence. For such case one could use the `exclude(..)` method :
+By default all target entity properties (please be aware of the note above : word "properties" may be misused) are candidates for being persisted, this may not be wanted and some properties should be removed from persistence. For such case one could use the `exclude(..)` method :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -37,12 +37,12 @@ MappingEase.entityBuilder(Country.class, Long.class)
 ```
 
 {% hint style="warning" %}
-Be aware that candidates are computed from getter and setter methods \(following Java Bean Naming convention\), not from instance fields.
+Be aware that candidates are computed from getter and setter methods (following Java Bean Naming convention), not from instance fields.
 {% endhint %}
 
 ### Embedding of embedding
 
-In some cases one may need to embed a bean of an already-embedded bean, then you should use the `innerEmbed(..)` method as in this \(totally fake\) exemple where president modification date is used as the election date stored in the country table :
+In some cases one may need to embed a bean of an already-embedded bean, then you should use the `innerEmbed(..)` method as in this (totally fake) exemple where president modification date is used as the election date stored in the country table :
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -50,6 +50,5 @@ MappingEase.entityBuilder(Country.class, Long.class)
     .embed(Country::getPresident)
         .innerEmbed(Person::getTimestamp)
             .exclude(Timestamp::getCreationDate)
-			.overrideName(Timestamp::getModificationDate, "presidentElectedAt")
+                .overrideName(Timestamp::getModificationDate, "presidentElectedAt")
 ```
-
