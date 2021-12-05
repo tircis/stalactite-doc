@@ -1,13 +1,13 @@
-# Inheritance
-
-Stalactite supports 2 types of inheritance :&#x20;
-
-* mapped super class, that only centralizes mapped properties, not id policy
-* inheritance aimed at defining id policy
+# Non polymorphic
 
 {% hint style="info" %}
 In this chapter you'll get a persister per child class, hence you can't load all children entities of a mapped super class at once : for that see polymorphism.
 {% endhint %}
+
+Stalactite supports 2 types of non polymorphic inheritance :&#x20;
+
+* mapped super class, that only centralizes mapped properties, not id policy
+* inheritance aimed at defining id policy
 
 ### Mapped super class
 
@@ -45,14 +45,14 @@ As a difference with mapped super class, hereafter the shared parent mapping def
 Here is a simple exemple where a configuration defines mapped properties of `Vehicle` class, as well as its identifier policy, then the `Car` class can benefit of it.
 
 ```java
-EntityMappingConfiguration<Vehicle, Identifier<Long>> inheritanceConfiguration = MappingEase
+EntityMappingConfiguration<Vehicle, Long> inheritanceConfiguration = MappingEase
       .entityBuilder(Vehicle.class, Long.class)
       // mapped super class defines id
       .add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
       .add(Vehicle::getColor)
       .getConfiguration();
 
-Persister<Car, Identifier<Long>, ?> carPersister = MappingEase
+Persister<Car, Long, ?> carPersister = MappingEase
       .entityBuilder(Car.class, Long.class)
       .add(Car::getModel)
       .mapInheritance(inheritanceConfiguration)
