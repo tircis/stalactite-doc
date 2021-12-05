@@ -4,6 +4,6 @@ This identifier policy uses database-generated id through auto-increment column.
 
 ```java
 MappingEase.entityBuilder(Car.class, long.class)
-    .add(Car::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+    .add(Car::getId).identifier(IdentifierPolicy.afterInsert())
     .add(Car::getModel)
 ```

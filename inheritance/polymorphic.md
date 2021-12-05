@@ -12,7 +12,7 @@ Single-table policy is available from `PolymorphismPolicy.singleTable()` method,
 
 ```java
 EntityPersister<AbstractVehicle, Long> abstractVehiclePersister = MappingEase.entityBuilder(AbstractVehicle.class, Long.class)
-    .add(AbstractVehicle::getId).identifier(ALREADY_ASSIGNED)
+    .add(AbstractVehicle::getId).identifier(afterInsert())
     .add(AbstravtVehicle::getColor)
     .mapPolymorphism(PolymorphismPolicy.<AbstractVehicle>singleTable()
         .addSubClass(MappingEase.subentityBuilder(Car.class)
@@ -30,7 +30,7 @@ Table-per-class policy is available from `PolymorphismPolicy.tablePerClass()` me
 
 ```java
 EntityPersister<AbstractVehicle, Long> abstractVehiclePersister = MappingEase.entityBuilder(AbstractVehicle.class, Long.class)
-    .add(AbstractVehicle::getId).identifier(ALREADY_ASSIGNED)
+    .add(AbstractVehicle::getId).identifier(afterInsert())
     .add(AbstravtVehicle::getColor)
     .mapPolymorphism(PolymorphismPolicy.<AbstractVehicle>tablePerClass()
         .addSubClass(MappingEase.subentityBuilder(Car.class)
@@ -48,7 +48,7 @@ Join-table policy is available from `PolymorphismPolicy.joinTable()` method, on 
 
 ```javascript
 EntityPersister<AbstractVehicle, Long> abstractVehiclePersister = MappingEase.entityBuilder(AbstractVehicle.class, Long.class)
-    .add(AbstractVehicle::getId).identifier(ALREADY_ASSIGNED)
+    .add(AbstractVehicle::getId).identifier(afterInsert())
     .add(AbstravtVehicle::getColor)
     .mapPolymorphism(PolymorphismPolicy.<AbstractVehicle>joinTable()
         .addSubClass(MappingEase.subentityBuilder(Car.class)

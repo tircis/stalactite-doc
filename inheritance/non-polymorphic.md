@@ -23,14 +23,14 @@ FluentEmbeddableMappingBuilder<Vehicle> vehiclePersistenceConfigurer =
 
 MappingEase.entityBuilder(Car.class, Long.class)
 	// concrete class defines id
-	.add(Car::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+	.add(Car::getId).identifier(IdentifierPolicy.afterInsert())
 	.add(Car::getModel)
 	.mapSuperClass(vehiclePersistenceConfigurer
 	.build(persistenceContext);
 	
 MappingEase.entityBuilder(Truk.class, Long.class)
 	// concrete class defines id
-	.add(Truk::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+	.add(Truk::getId).identifier(IdentifierPolicy.afterInsert())
 	.add(Truk::getEngine)
 	.mapSuperClass(vehiclePersistenceConfigurer)
 	.build(persistenceContext);
@@ -48,7 +48,7 @@ Here is a simple exemple where a configuration defines mapped properties of `Veh
 EntityMappingConfiguration<Vehicle, Long> inheritanceConfiguration = MappingEase
       .entityBuilder(Vehicle.class, Long.class)
       // mapped super class defines id
-      .add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
+      .add(Vehicle::getId).identifier(IdentifierPolicy.afterInsert())
       .add(Vehicle::getColor)
       .getConfiguration();
 
@@ -64,14 +64,14 @@ Persister<Car, Long, ?> carPersister = MappingEase
 By default mapped properties in parent configuration are stored in child class table, but you may want to store them in different tables through a join on primary key. For such a case one can simply ask for `withJoinedTables(..)` right after calling `mapInheritance(..)`. The method has 2 signatures, one without argument meaning that parent table will be named according to configured table naming strategy, and one of them taking the table on which parent class persistence must be done. Here is same example as previous one with this option activated :
 
 ```java
-EntityMappingConfiguration<Vehicle, Identifier<Long>> inheritanceConfiguration = MappingEase
+EntityMappingConfiguration<Vehicle, Long> inheritanceConfiguration = MappingEase
       .entityBuilder(Vehicle.class, Long.class)
       // mapped super class defines id
-      .add(Vehicle::getId).identifier(IdentifierPolicy.ALREADY_ASSIGNED)
+      .add(Vehicle::getId).identifier(IdentifierPolicy.afterInsert())
       .add(Vehicle::getColor)
       .getConfiguration();
 
-Persister<Car, Identifier<Long>, ?> carPersister = MappingEase
+Persister<Car, Long, ?> carPersister = MappingEase
       .entityBuilder(Car.class, Long.class)
       .add(Car::getModel)
       .mapInheritance(inheritanceConfiguration)

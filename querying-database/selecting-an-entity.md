@@ -10,9 +10,9 @@ Only properties used by mapping can be used as criteria. If a criteria contains 
 
 Here is a simple example to get all countries whose name starts with "F", operators are available in class `org.gama.stalactite.query.model.Operators`.
 
-```
-EntityPersister<Country, Identifier> persister = entityBuilder(Country.class, Identifier.class)
-    .add(Country::getId).identifier(ALREADY_ASSIGNED)
+```java
+EntityPersister<Country, Long> persister = entityBuilder(Country.class, Long.class)
+    .add(Country::getId).identifier(afterInsert())
     .add(Country::getName)
     .build(persistenceContext);
     
@@ -25,11 +25,11 @@ List<Country> countries = persister.selectWhere(Country::getName, startsWith("F"
 It also worlk with relation, herafter with a one-ton-many :
 
 ```java
-RelationalEntityPersister<Country, Identifier> persister = (RelationalEntityPersister) entityBuilder(Country.class, Identifier.class)
-    .add(Country::getId).identifier(ALREADY_ASSIGNED)
+RelationalEntityPersister<Country, Long> persister = (RelationalEntityPersister) entityBuilder(Country.class, Long.class)
+    .add(Country::getId).identifier(afterInsert())
     .add(Country::getName)
     .addOneToManySet(Country::getCities, entityBuilder(City.class, Identifier.class)
-        .add(City::getId).identifier(ALREADY_ASSIGNED)
+        .add(City::getId).identifier(afterInsert())
         .add(City::getName))
         .mappedBy(City::getCountry)
     .build(persistenceContext);

@@ -19,7 +19,7 @@ They all can be given to an `EntityPersister`, which is the result of the `entit
 
 ```java
 EntityPersister<Car, Long> carPersister = entityBuilder(Car.class, Long.class)
-    .add(Car::getId).identifier(AFTER_INSERT)
+    .add(Car::getId).identifier(afterInsert())
     .add(Car::getModel)
     .add(Car::getColor)
     .embed(Car::getTimestamp, embeddableBuilder(Timestamp.class)

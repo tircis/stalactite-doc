@@ -8,7 +8,7 @@ Mapping a one-to-one relation can be done through the method `addOneToOne(..)` b
 
 ```java
 IFluentEntityMappingBuilder<City, Long> capitalMappingConfiguration = MappingEase.entityBuilder(City.class, Long.class)
-    .add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+    .add(City::getId).identifier(IdentifierPolicy.afterInsert())
     .add(City::getName);
 
 MappingEase.entityBuilder(Country.class, Long.class)
@@ -21,16 +21,16 @@ Chaining those statements is encouraged in order to visualize graph complexity a
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
-    .add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+    .add(Country::getId).identifier(IdentifierPolicy.afterInsert())
     .addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
-        .add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+        .add(City::getId).identifier(IdentifierPolicy.afterInsert())
         .add(City::getName))
         .addOneToOne(City::getMayor, MappingEase.entityBuilder(Person.class, Long.class)
-            .add(Person::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+            .add(Person::getId).identifier(IdentifierPolicy.afterInsert())
             .add(Person::getFirstName)
             .add(Person::getLastName))
             .addOneToOne(Person::getCar, MappingEase.entityBuilder(Car.class, Long.class)
-                .add(Car::getId).identifier(IdentifierPolicy.AFTER_INSERT)
+                .add(Car::getId).identifier(IdentifierPolicy.afterInsert())
                 .add(Car::getModelName))
 ```
 {% endhint %}
@@ -41,14 +41,14 @@ By default property relation is owned by declaring side, but depeding on your da
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
-	.add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
-		.add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-		.add(City::getName))
-	.mappedBy(City::getCountry)
+    .add(Country::getId).identifier(IdentifierPolicy.afterInsert())
+    .addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
+        .add(City::getId).identifier(IdentifierPolicy.afterInsert())
+        .add(City::getName))
+    .mappedBy(City::getCountry)
 ```
 
-This creates a bidirectional one-to-one relation that will be persisted on a `City `table through the `countryId `column.
+This creates a bidirectional one-to-one relation that will be persisted on a `City` table through the `countryId` column.
 
 #### Without bidirectional relation
 
@@ -58,11 +58,11 @@ If you don't need bidirectionality, one may use the `mappedBy(..)` method with a
 Table cityTable = new Table("City");
 Column<Table, Country> cityCountryPointer = city.addColumn("countryId", Country.class);
 MappingEase.entityBuilder(Country.class, Long.class)
-	.add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
-		.add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-		.add(City::getName))
-	.mappedBy(cityCountryPointer)
+    .add(Country::getId).identifier(IdentifierPolicy.afterInsert())
+    .addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
+        .add(City::getId).identifier(IdentifierPolicy.afterInsert())
+        .add(City::getName))
+    .mappedBy(cityCountryPointer)
 ```
 
 ## Mandatory relation
@@ -71,11 +71,11 @@ As we did for a simple property, a one-to-one relation can be declared mandatory
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
-	.add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
-		.add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-		.add(City::getName))
-		.mandatory()
+    .add(Country::getId).identifier(IdentifierPolicy.afterInsert())
+    .addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
+        .add(City::getId).identifier(IdentifierPolicy.afterInsert())
+        .add(City::getName))
+    .mandatory()
 ```
 
 This implies that the owning property column is not nullable.
@@ -86,11 +86,11 @@ By default, cascade policy is `ALL` (which means that unsaved target instance is
 
 ```java
 MappingEase.entityBuilder(Country.class, Long.class)
-	.add(Country::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-	.addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
-		.add(City::getId).identifier(IdentifierPolicy.AFTER_INSERT)
-		.add(City::getName))
-		.cascading(READ_ONLY)
+    .add(Country::getId).identifier(IdentifierPolicy.afterInsert())
+    .addOneToOne(Country::getCapital, MappingEase.entityBuilder(City.class, Long.class)
+        .add(City::getId).identifier(IdentifierPolicy.afterInsert())
+        .add(City::getName))
+    .cascading(READ_ONLY)
 ```
 
 {% hint style="info" %}
