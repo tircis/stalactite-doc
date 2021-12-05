@@ -13,6 +13,7 @@ PooledHiLoSequence longSequence = new PooledHiLoSequence(new PooledHiLoSequenceO
 				new TransactionalConnectionProvider(dataSource),
 				persistenceContext.getJDBCBatchSize());
 
+
 MappingEase.entityBuilder(Car.class, long.class)
     .add(Car::getId).identifier(IdentifierPolicy.beforeInsert(longSequence))
     .add(Car::getModel)
