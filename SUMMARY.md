@@ -24,6 +24,7 @@
     * [Complex projection](querying-database/selecting-a-projection/selection-a-projection.md)
     * [Targeting one table](querying-database/selecting-a-projection/targeting-one-table.md)
 * [Persistence listeners](persistence-listeners.md)
+* [Generating database schema](generating-database-schema.md)
 * [Transversal configuration](transversal-configuration/README.md)
   * [Naming strategies](transversal-configuration/naming-strategies.md)
   * [Dialect](transversal-configuration/dialect/README.md)
@@ -33,3 +34,4 @@
 * [Architecture tips](architecture-tips/README.md)
   * [Don't create "a Persister to rule them all"](architecture-tips/dont-create-a-persister-to-rule-them-all.md)
   * [A word about performance](architecture-tips/a-word-about-performance.md)
+  * [Multiple entities targeting same table](architecture-tips/multiple-entities-targeting-same-table.md)
