@@ -8,7 +8,7 @@ Only properties used by mapping can be used as criteria. If a criteria contains 
 
 
 
-Here is a simple example to get all countries whose name starts with "F", operators are available in class `org.gama.stalactite.query.model.Operators`.
+Here is a simple example to get all countries whose name starts with "F", operators are available in class `org.codefilarete.stalactite.query.model.Operators`.
 
 ```java
 EntityPersister<Country, Long> persister = entityBuilder(Country.class, Long.class)
